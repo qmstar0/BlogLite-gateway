@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/charmbracelet/log"
+	"github.com/qmstar0/shutdown"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"simple-gateway/assets"

@@ -1,0 +1,21 @@
+port = [
+    80,
+    443
+]
+
+[[proxy]]
+source = "http://example.com"
+target = "http://localhost:8001"
+
+[[proxy]]
+source = "http://example2.com"
+target = "http://localhost:8002"
+
+[[proxy]]
+source = "http://api.example.com"
+target = "http://localhost:8003/api"
+
+[assets]
+source = "http://assets.example.com"
+strip_prefix = "/assets"
+dir = 'to\your\path\'
