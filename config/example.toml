@@ -18,4 +18,5 @@ target = "http://localhost:8003/api"
 [assets]
 source = "http://assets.example.com"
 strip_prefix = "/assets"
+#此处应该使用 docker -v local/path:to\your\path\ 的方式挂载资源目录
 dir = 'to\your\path\'

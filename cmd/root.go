@@ -15,7 +15,7 @@ import (
 	"os"
 )
 
-const defaultConfigPath = "config/proxy.toml"
+const defaultConfigPath = "proxy.toml"
 
 var (
 	configPath string
