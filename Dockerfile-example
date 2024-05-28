@@ -11,5 +11,6 @@ FROM alpine:latest
 WORKDIR /gateway
 
 COPY --from=builder /gateway/build/main .
+COPY ./key ./key
 
-CMD ["./main", "assets"]
+CMD ["./main"]

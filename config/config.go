@@ -11,9 +11,14 @@ type Assets struct {
 	StripPrefix string `toml:"strip_prefix" mapstructure:"strip_prefix"`
 }
 
-type Config struct {
-	Assets Assets `toml:"assets" mapstructure:"assets"`
+type SSL struct {
+	SSLCertFilePath string `toml:"ssl_cert_fp" mapstructure:"ssl_cert_fp"`
+	SSLKeyFilePath  string `toml:"ssl_key_fp" mapstructure:"ssl_key_fp"`
+}
 
-	Port   []int   `toml:"port" mapstructure:"port"`
+type Config struct {
+	Debug  bool    `toml:"debug" mapstructure:"debug"`
+	SSL    *SSL    `toml:"ssl" mapstructure:"ssl"`
+	Assets *Assets `toml:"assets" mapstructure:"assets"`
 	Proxys []Proxy `toml:"proxy" mapstructure:"proxy"`
 }

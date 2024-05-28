@@ -1,7 +1,7 @@
-port = [
-    80,
-    443
-]
+#开启该项即开启443端口
+[ssl]
+ssl_cert_fp = "example.crt"
+ssl_key_fp = "example.pem"
 
 [[proxy]]
 source = "http://example.com"
