@@ -1,4 +1,5 @@
-#开启该项即开启443端口
+# 默认开启80端口
+# 如果配置ssl,则自动开启443端口并将访问80端口的请求转到443端口
 [ssl]
 ssl_cert_fp = "example.crt"
 ssl_key_fp = "example.pem"

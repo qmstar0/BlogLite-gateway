@@ -1,4 +1,4 @@
-module simple-gateway
+module github.com/qmstar0/nightsky-gateway
 
 go 1.22.0
 

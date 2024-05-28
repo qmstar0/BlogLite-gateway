@@ -1,6 +1,6 @@
 package main
 
-import "simple-gateway/cmd"
+import "github.com/qmstar0/nightsky-gateway/cmd"
 
 func main() {
 	cmd.Execute()

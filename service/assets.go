@@ -2,9 +2,9 @@ package service
 
 import (
 	"fmt"
+	"github.com/qmstar0/nightsky-gateway/config"
 	"net/http"
 	"os"
-	"simple-gateway/config"
 )
 
 func NewAssetsFileServer(assets *config.Assets) (http.Handler, error) {

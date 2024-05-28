@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
+	"github.com/qmstar0/nightsky-gateway/config"
+	"github.com/qmstar0/nightsky-gateway/router"
+	"github.com/qmstar0/nightsky-gateway/service"
 	"github.com/qmstar0/shutdown"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"simple-gateway/cmd/router"
-	"simple-gateway/config"
-	"simple-gateway/service"
 
 	"net/http"
 	"os"
@@ -63,8 +63,10 @@ var rootCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		go router.ListenAndServe(proxyMap)
-		if cfg.SSL != nil {
+		ssl := cfg.SSL != nil
+		go router.ListenAndServe(proxyMap, ssl)
+
+		if ssl {
 			go router.ListenAndServeTLS(proxyMap, cfg.SSL.SSLCertFilePath, cfg.SSL.SSLKeyFilePath)
 		}
 	},
