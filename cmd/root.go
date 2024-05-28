@@ -2,29 +2,28 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
 	"github.com/qmstar0/shutdown"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"simple-gateway/cmd/middlewate"
 	"simple-gateway/cmd/router"
 	"simple-gateway/config"
-	"simple-gateway/proxy"
+	"simple-gateway/service"
 
 	"net/http"
 	"os"
 )
 
-const defaultConfigPath = "proxy.toml"
+const defaultConfigPath = "config.toml"
 
 var (
-	configPath string
-	debug      bool
-)
-
-var (
-	cfg      config.Config
-	proxyMap = make(map[string]http.Handler)
+	configPath  string
+	debug       bool
+	cfg         config.Config
+	proxyMap    = make(map[string]http.Handler)
+	sourceStyle = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#74D6FB")).Render
+	targetStyle = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#74FBB5")).Render
 )
 
 var rootCmd = &cobra.Command{
@@ -32,39 +31,41 @@ var rootCmd = &cobra.Command{
 	Short: "Forward the request to the corresponding service",
 	Long:  "Forward the request to the corresponding service, which comes with a static resource service",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-
-		if debug {
+		if debug || cfg.Debug {
 			log.SetLevel(log.DebugLevel)
+			log.Debug("debug mode")
 		}
 
-		if len(cfg.Proxys) <= 0 {
-			log.Error("没有配置任何反向代理")
-			shutdown.Exit(1)
-		}
 		for _, p := range cfg.Proxys {
-			log.Infof("Source:%s › Target:%s", p.Source, p.Target)
-			host, handler, err := proxy.NewReverseProxy(p.Source, p.Target)
+			log.Infof("Source: %s  › Target: %s ", sourceStyle(p.Source), targetStyle(p.Target))
+			handler, err := service.NewReverseProxy(p.Target)
 			if err != nil {
 				log.Error(err)
 				shutdown.Exit(1)
 			}
-			if err = SetUpHttpHandler(host, handler); err != nil {
+			if err := SetUpHttpHandler(p.Source, handler); err != nil {
+				log.Error(err)
+				shutdown.Exit(1)
+			}
+		}
+
+		if cfg.Assets != nil {
+			log.Infof("Source: %s  › AssetsDir: %s ", sourceStyle(cfg.Assets.Source), targetStyle(cfg.Assets.Dir))
+			handler, err := service.NewAssetsFileServer(cfg.Assets)
+			if err != nil {
+				log.Error(err)
+				shutdown.Exit(1)
+			}
+			if err := SetUpHttpHandler(cfg.Assets.Source, handler); err != nil {
 				log.Error(err)
 				shutdown.Exit(1)
 			}
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		logger := log.WithPrefix("Reverse proxy server")
-		router.SetUpRouter(proxyMap)
-		middlewate.SetUpMiddlewate(proxyMap)
-
-		for _, p := range cfg.Port {
-			go func(port int) {
-				addr := fmt.Sprintf("0.0.0.0:%d", port)
-				logger.Infof("Start listening %s", addr)
-				logger.Info(http.ListenAndServe(addr, nil))
-			}(p)
+		go router.ListenAndServe(proxyMap)
+		if cfg.SSL != nil {
+			go router.ListenAndServeTLS(proxyMap, cfg.SSL.SSLCertFilePath, cfg.SSL.SSLKeyFilePath)
 		}
 	},
 }

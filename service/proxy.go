@@ -1,4 +1,4 @@
-package proxy
+package service
 
 import (
 	"net/http"
@@ -6,15 +6,10 @@ import (
 	"net/url"
 )
 
-func NewReverseProxy(sourcePath, targetPath string) (string, http.Handler, error) {
-	source, err := url.Parse(sourcePath)
-	if err != nil {
-		return "", nil, err
-	}
-
+func NewReverseProxy(targetPath string) (http.Handler, error) {
 	target, err := url.Parse(targetPath)
 	if err != nil {
-		return "", nil, err
+		return nil, err
 	}
 
 	proxy := httputil.NewSingleHostReverseProxy(target)
@@ -29,5 +24,5 @@ func NewReverseProxy(sourcePath, targetPath string) (string, http.Handler, error
 		req.Header.Set("X-Forwarded-Host", req.Header.Get("Host"))
 		req.Header.Set("X-Forwarded-From", req.RemoteAddr)
 	}
-	return source.Host, proxy, nil
+	return proxy, nil
 }
