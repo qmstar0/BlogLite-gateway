@@ -3,6 +3,7 @@ module github.com/qmstar0/nightsky-gateway
 go 1.22.0
 
 require (
+	github.com/charmbracelet/lipgloss v0.11.0
 	github.com/charmbracelet/log v0.4.0
 	github.com/qmstar0/shutdown v0.0.1
 	github.com/spf13/cobra v1.8.0
@@ -11,7 +12,6 @@ require (
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
-	github.com/charmbracelet/lipgloss v0.11.0 // indirect
 	github.com/charmbracelet/x/ansi v0.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
