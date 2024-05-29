@@ -1,6 +1,7 @@
 package router
 
 import (
+	"crypto/tls"
 	"fmt"
 	"github.com/charmbracelet/log"
 	"net/http"
@@ -22,5 +23,17 @@ func ListenAndServeTLS(proxymap map[string]http.Handler, certFp, keyFp string) {
 		handler.ServeHTTP(w, r)
 	})
 
-	log.Warn(http.ListenAndServeTLS(addr, certFp, keyFp, CorsMiddlewate(mux)))
+	server := http.Server{
+		Addr:    ":443",
+		Handler: mux,
+		TLSConfig: &tls.Config{
+			// 设置所需的加密套件
+			CipherSuites: []uint16{
+				tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+				tls.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,
+			},
+			MinVersion: tls.VersionTLS12,
+		},
+	}
+	log.Warn(server.ListenAndServeTLS(certFp, keyFp))
 }
