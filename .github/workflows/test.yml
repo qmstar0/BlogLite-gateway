@@ -27,17 +27,21 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-        # Add Docker's official GPG key:
-      - run: sudo apt-get update
-      - run: sudo apt-get install ca-certificates curl gnupg
-      - run: sudo install -m 0755 -d /etc/apt/keyrings
-      - run: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-      - run: sudo chmod a+r /etc/apt/keyrings/docker.gpg
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
 
-        # Add the repository to Apt sources:
-      - run: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-      - run: sudo apt-get update
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#    steps:
+#        # Add Docker's official GPG key:
+#      - run: sudo apt-get update
+#      - run: sudo apt-get install ca-certificates curl gnupg
+#      - run: sudo install -m 0755 -d /etc/apt/keyrings
+#      - run: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+#      - run: sudo chmod a+r /etc/apt/keyrings/docker.gpg
+#
+#        # Add the repository to Apt sources:
+#      - run: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+#      - run: sudo apt-get update
